@@ -4,12 +4,12 @@
 % - Juan Carlos Gutiérrez Herández
 % - Irene Pérez Navarro
 
-:- consult('base.pl').
+:- consult('conocimiento.pl').
 
 % Guarda el estado actual de todas las listas en el archivo conocimiento.pl
 guardar_en_archivo :-
     tell('conocimiento.pl'),
-    listing(lista/2),
+    listing(idioma/2),
     told,
     write('Cambios guardados en base.pl.'), nl.
 
