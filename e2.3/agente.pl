@@ -37,11 +37,51 @@ menu :-
 
 
 % 3. CONCATENAR
-
+ejecutar(3) :-
+    nl, write('---concatenar lista---'),nl,
+    write('Idiomas disponibles: espanol, ingles, italiano, portuges, frances'), nl,
+    nl,
+    write ('Ingrese idioma: ') read(idioma1),
+    write ('Ingrese idioma: ') read(idioma2),
+        (idioma(idioma1, lista1),
+         idioma(idioma2, lista2),
+         append(lista1, lista2, lista_concat),
+         nl,
+         write('Lista cocatenada: '), nl,
+         print_lista(lista_concat ),
+         length(lista_concat, largo),
+         format('~nTotal de palbras: ~w~n,'[largo]);
+         write('Error: uno de los cambios de idioma no existen'), nl
+        ).
 
 % 4. AGREGAR
-
-
+ejecutar(4) :-
+    nl,write('---Agregar palabra---'), nl,
+    write('Idiomas disponibles: espanol, ingles, italiano, portugues, frances'),  nl,
+    nl,
+    write('Ingrese el idioma que desea agregar: '), read(idioma),
+    (   idioma(Idioma, ListaActual)
+    ->  format('Lista actual de ~w: ~w~n', [Idioma, ListaActual]),
+        nl,
+        write('Ingrese la palabra a agregar: '), read(PalabraRaw),
+        % Convertir a string/atom limpio
+        term_to_atom(PalabraRaw, Palabra),
+        (   member(Palabra, ListaActual)
+        ->  format('La palabra "~w" ya existe en la lista de ~w.~n', [Palabra, Idioma])
+        ;   append(ListaActual, [Palabra], NuevaLista),
+            % Actualizar en memoria
+            retract(idioma(Idioma, _)),
+            assert(idioma(Idioma, NuevaLista)),
+            format('Palabra "~w" agregada exitosamente.~n', [Palabra]),
+            nl,
+            format('Lista actualizada de ~w: ~w~n', [Idioma, NuevaLista]),
+            length(NuevaLista, Largo),
+            format('Total de palabras: ~w~n', [Largo]),
+            % Persistir cambios
+            guardar_en_archivo
+        )
+    ;   write('Error: El idioma ingresado no existe.'), nl
+    ).
 % 5. ELIMINAR
 
 
