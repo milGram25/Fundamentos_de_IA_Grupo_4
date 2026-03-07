@@ -83,7 +83,34 @@ ejecutar(4) :-
     ;   write('Error: El idioma ingresado no existe.'), nl
     ).
 % 5. ELIMINAR
+ejecutar(5) :-
+    % Eliminar nombres de las listas existentes
+    write('-----------------------------------------------'), nl,
+    write('Idimomas disponibles en la Base de Datos'), nl,
+    findall(Nombre, idioma(Nombre, _), ListaNombres),
+    listas(ListaNombres),
 
+    % Solicitar a que idoma le va a Eliminar
+    nl, write('A que idioma desea eliminar alguna palabra?'), nl,
+    read(Id),
+
+    % Eliminar palabra
+    (idioma(Id, Lt) ->
+        write(Lt),
+        nl, write('Que palabra desea borrar?'), nl,
+        read(P),
+            (member(P,Lt)->
+            delete(Lt,P,Nlt),
+            retract(idioma(Id,Lt)),
+            assert(idioma(Id,Nlt)),
+            nl, write('Palabra Eliminada'),
+            guardar_en_archivo;
+            write('Palabra no encontrada')
+        )
+        ;
+        write('Idioma no encontrado')
+    ).
+    
 
 % 6. LONGITUD
 ejecutar(6) :-
@@ -94,7 +121,7 @@ ejecutar(6) :-
     listas(ListaNombres),
 
     % Solicitar el idioma
-    nl, write('Cual idioma desea saber la longitud?:'), 
+    nl, write('¿Cual idioma desea saber la longitud?:'), 
     read(Id),
     
     % Validar y mostrar longitud
