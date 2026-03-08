@@ -1,8 +1,9 @@
 %  Integrantes:
-% - Sergio Camarena Carbajal
+% - Sergio Alejandro Camarena Carbajal
 % - Milton García Romo
-% - Juan Carlos Gutiérrez Herández
+% - Juan Carlos Gutiérrez Hernández
 % - Irene Pérez Navarro
+% - Christopher Santana
 
 :- consult('conocimiento.pl').
 

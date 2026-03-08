@@ -12,7 +12,12 @@ import java.util.Scanner;
 import java.util.Scanner;
 /**
  *
- * @author mil_g
+ * Autores
+ * - Sergio Alejandro Camarena Carbajal
+ * - Milton García Romo
+ * - Juan Carlos Gutiérrez Hernández
+ * - Irene Pérez Navarro
+ * - Christopher Santana
  */
 public class JavaInterface {
     
