@@ -31,10 +31,13 @@ menu :-
 
 
 % 1. BUSCAR
-
+buscar(Id, P) :-
+    idioma(Id, Lt),
+    member(P, Lt).
 
 % 2. COMPROBAR
-
+comprobar(Id, Lt) :-
+    idioma(Id, Lt).
 
 % 3. CONCATENAR
 ejecutar(3) :-
@@ -53,6 +56,11 @@ ejecutar(3) :-
          format('~nTotal de palbras: ~w~n', [Largo]);
          write('Error: uno de los cambios de idioma no existen'), nl
         ).
+
+concatenar_idiomas(Id1, Id2, Result) :-
+    idioma(Id1, Lt1),
+    idioma(Id2, Lt2),
+    append(Lt1, Lt2, Result).
 
 % 4. AGREGAR
 ejecutar(4) :-
@@ -82,6 +90,18 @@ ejecutar(4) :-
         )
     ;   write('Error: El idioma ingresado no existe.'), nl
     ).
+
+
+agregar(Id, P) :-
+    idioma(Id, Lt),
+    (   member(P, Lt)
+    ->  fail
+    ;   append(Lt, [P], Nlt),
+        retract(idioma(Id, _)),
+        assert(idioma(Id, Nlt)),
+        guardar_en_archivo % Persists changes to conocimiento.pl
+    ).
+
 % 5. ELIMINAR
 ejecutar(5) :-
     % Eliminar nombres de las listas existentes
@@ -111,6 +131,15 @@ ejecutar(5) :-
         write('Idioma no encontrado')
     ).
     
+eliminar(Id,P) :-
+    idioma(Id, Lt),
+    (   member(P, Lt)
+    ->  delete(Lt, P, Nlt),
+        retract(idioma(Id, _)),
+        assert(idioma(Id, Nlt)),
+        guardar_en_archivo
+    ;   fail
+    ).
 
 % 6. LONGITUD
 ejecutar(6) :-
@@ -130,6 +159,11 @@ ejecutar(6) :-
         format('El idioma tiene ~d palabras registradas.', [N])
     ;   write('Error: El idioma no existe en la base de datos.')
     ).
+
+longitud(Id, N) :-
+    idioma(Id, Lt),
+    length(Lt, N).
+
 % Mostrar listas
 listas([]).
 listas([H|T]) :-
@@ -137,7 +171,49 @@ listas([H|T]) :-
     listas(T).
 
 % 7. ORDENAMIENTO
-
+ordenar_idioma(Id, Nlt) :-
+    idioma(Id, Lt),
+    sort(Lt, Nlt),
+    retract(idioma(Id, _)),
+    assert(idioma(Id, Nlt)),
+    guardar_en_archivo.
 
 % 8. Salir
 ejecutar(8) :- write('Gracias...'), nl.
+
+
+% Aprender
+
+% Cuenta cuántas palabras de una lista pertenecen a un idioma
+rating(Id, Palabras, Count) :-
+    idioma(Id, Lt),
+    include(flip_member(Lt), Palabras, Coincidencias),
+    length(Coincidencias, Count).
+
+% Predicado auxiliar para usar con include/3
+flip_member(Lista, Elemento) :- member(Elemento, Lista).
+
+aprender(Frase, IdGanador) :-
+    % 1. Convertimos el string en una lista de átomos
+    atomic_list_concat(ListaPalabras, ' ', Frase),
+    
+    % 2. Buscamos todos los idiomas y sus ratings
+    findall(C-Id, rating(Id, ListaPalabras, C), Ratings),
+    
+    % 3. Obtenemos el idioma con el rating mas alto
+    keysort(Ratings, Sorted),
+    reverse(Sorted, [MaxCount-IdGanador|_]),
+    
+    % Solo aprendemos si hubo al menos una coincidencia previa
+    MaxCount > 0, 
+    
+    % 4. Identificamos qué palabras NO están en el idioma ganador y las agregamos
+    idioma(IdGanador, ListaActual),
+    exclude(flip_member(ListaActual), ListaPalabras, PalabrasNuevas),
+    (   PalabrasNuevas \= []
+    ->  append(ListaActual, PalabrasNuevas, Nlt),
+        retract(idioma(IdGanador, _)),
+        assert(idioma(IdGanador, Nlt)),
+        guardar_en_archivo
+    ;   true % No hay nada nuevo que aprender
+    ).
