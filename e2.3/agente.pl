@@ -31,10 +31,49 @@ menu :-
 
 
 % 1. BUSCAR
-
+ejecutar(1) :-
+    nl, write('---Buscar palabra---'), nl,
+    write('Idiomas disponibles: espanol, ingles, italiano, portugues, frances'), nl,
+    write('Ingrese el idioma: '), read(Idioma),
+    (idioma(Idioma, Lista) ->
+        write('Ingrese la palabra a buscar: '), read(Palabra),
+        (member(Palabra, Lista) ->
+            format('La palabra "~w" SÍ se encuentra en la lista de ~w.~n', [Palabra, Idioma])
+        ;
+            format('La palabra "~w" NO se encuentra en la lista de ~w.~n', [Palabra, Idioma]),
+            write('¿Desea agregarla? (si/no): '), read(Resp),
+            (Resp == si ->
+                append(Lista, [Palabra], NuevaLista),
+                retract(idioma(Idioma, _)),
+                assert(idioma(Idioma, NuevaLista)),
+                guardar_en_archivo,
+                write('Palabra agregada y guardada.'), nl
+            ;
+                write('No se agregó la palabra.'), nl
+            )
+        )
+    ;
+        write('Idioma no encontrado.'), nl
+    ).
 
 % 2. COMPROBAR
+ejecutar(2) :-
+    nl, write('---Listar elementos---'), nl,
+    write('Idiomas disponibles: espanol, ingles, italiano, portugues, frances'), nl,
+    write('Ingrese el idioma: '), read(Idioma),
+    (idioma(Idioma, Lista) ->
+        write('Elementos de la lista:'), nl,
+        listar_uno_a_uno(Lista)
+    ;
+        write('Idioma no encontrado.'), nl
+    ).
 
+listar_uno_a_uno([]) :- write('Fin de la lista.'), nl.
+listar_uno_a_uno([H|T]) :-
+    write(H), nl,
+    write('Presione enter para ver el siguiente...'),
+    read(_),
+    listar_uno_a_uno(T).
 
 % 3. CONCATENAR
 ejecutar(3) :-
@@ -137,7 +176,20 @@ listas([H|T]) :-
     listas(T).
 
 % 7. ORDENAMIENTO
-
+ejecutar(7) :-
+    nl, write('---Ordenar lista---'), nl,
+    write('Idiomas disponibles: espanol, ingles, italiano, portugues, frances'), nl,
+    write('Ingrese el idioma: '), read(Idioma),
+    (idioma(Idioma, Lista) ->
+        sort(Lista, ListaOrd),
+        write('Lista ordenada:'), nl,
+        write(ListaOrd), nl,
+        retract(idioma(Idioma, _)),
+        assert(idioma(Idioma, ListaOrd)),
+        guardar_en_archivo
+    ;
+        write('Idioma no encontrado.'), nl
+    ).
 
 % 8. Salir
 ejecutar(8) :- write('Gracias...'), nl.
