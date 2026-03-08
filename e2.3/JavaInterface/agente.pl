@@ -75,7 +75,7 @@ ejecutar(2) :-
 listar_uno_a_uno([]) :- write('Fin de la lista.'), nl.
 listar_uno_a_uno([H|T]) :-
     write(H), nl,
-    write('Presione enter para ver el siguiente...').
+    listar_uno_a_uno(T).
 
 comprobar(Id, Lt) :-
     idioma(Id, Lt).
