@@ -3,11 +3,10 @@ from mlxtend.frequent_patterns import fpgrowth, association_rules
 from mlxtend.preprocessing import TransactionEncoder
 
 # 1. CARGA DEL DATASET
-# Reemplaza 'CALIDAD DE LECHE LACTOESCAN.xlsx - Hoja1.csv' con la ruta de tu archivo
 df_leche = pd.read_csv('CALIDAD DE LECHE LACTOESCAN.xlsx - Hoja1.csv')
 
 # 2. PRE-PROCESAMIENTO: DISCRETIZACIÓN
-# Definimos funciones para categorizar según estándares técnicos lácteos
+# Definimos funciones para categorizar según estándares técnicos lácteos (ya que el algoritmo trabjaa mejor con categorías que con números)
 def categorizar_leche(row):
     items = []
     
