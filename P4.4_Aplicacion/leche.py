@@ -55,5 +55,13 @@ reglas = association_rules(frequent_itemsets, metric="confidence", min_threshold
 # Ordenamos por 'lift' para encontrar las relaciones más fuertes
 resultado = reglas.sort_values(by='lift', ascending=False)
 
+# Función para la interfaz
+def obtener_tabla_reglas():
+    df_tabla = resultado[['antecedents', 'consequents', 'support', 'confidence', 'lift']].head(10).copy()
+    # Limpiamos los frozensets para que se vea texto normal
+    df_tabla['antecedents'] = df_tabla['antecedents'].apply(lambda x: ", ".join(list(x)))
+    df_tabla['consequents'] = df_tabla['consequents'].apply(lambda x: ", ".join(list(x)))
+    return df_tabla
+
 print("--- REGLAS DE ASOCIACIÓN DETECTADAS ---")
 print(resultado[['antecedents', 'consequents', 'support', 'confidence', 'lift']].head(10))
