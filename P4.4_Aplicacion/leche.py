@@ -1,12 +1,17 @@
 import pandas as pd
+import os
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from mlxtend.preprocessing import TransactionEncoder
 
 # 1. CARGA DEL DATASET
-df_leche = pd.read_csv('CALIDAD DE LECHE LACTOESCAN.xlsx - Hoja1.csv')
+# Obtiene la carpeta donde está el algoritmo para tener una ruta absoluta, para que pueda encontrar el dataset siempre
+ruta_carpeta = os.path.dirname(os.path.abspath(__file__))
+ruta_archivo = os.path.join(ruta_carpeta, 'CALIDAD DE LECHE LACTOESCAN.xlsx')
+
+df_leche = pd.read_excel(ruta_archivo)
 
 # 2. PRE-PROCESAMIENTO: DISCRETIZACIÓN
-# Definimos funciones para categorizar según estándares técnicos lácteos (ya que el algoritmo trabjaa mejor con categorías que con números)
+# Definimos funciones para categorizar según estándares técnicos lácteos (ya que el algoritmo trabaja mejor con categorías que con números)
 def categorizar_leche(row):
     items = []
     
@@ -47,5 +52,5 @@ reglas = association_rules(frequent_itemsets, metric="confidence", min_threshold
 # Ordenamos por 'lift' para encontrar las relaciones más fuertes
 resultado = reglas.sort_values(by='lift', ascending=False)
 
-print("--- REGLAS DE ASOCIACIÓN DETECTADAS EN TU DATASET ---")
+print("--- REGLAS DE ASOCIACIÓN DETECTADAS ---")
 print(resultado[['antecedents', 'consequents', 'support', 'confidence', 'lift']].head(10))
