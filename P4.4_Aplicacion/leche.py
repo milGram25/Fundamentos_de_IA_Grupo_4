@@ -3,6 +3,9 @@ import os
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 from mlxtend.preprocessing import TransactionEncoder
 
+# Required dependencies: pandas, openpyxl, mlxtend
+# Install with: pip install pandas openpyxl mlxtend
+
 # 1. CARGA DEL DATASET
 # Obtiene la carpeta donde está el algoritmo para tener una ruta absoluta, para que pueda encontrar el dataset siempre
 ruta_carpeta = os.path.dirname(os.path.abspath(__file__))
